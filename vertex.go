@@ -23,14 +23,16 @@ type Vertex struct {
 	coor  Point
 	speed Velocity
 	edges []*Vertex
+	past  *Vertex //for animated representetion
 }
 
 //NewVertex creates a new vertex
-func NewVertex(value int, coor Point, speed Velocity) *Vertex {
+func NewVertex(value int, coor Point, speed Velocity, past *Vertex) *Vertex {
 	return &Vertex{
 		value: value,
 		coor:  coor,
 		speed: speed,
+		past:  past,
 	}
 }
 
@@ -48,7 +50,7 @@ func (v *Vertex) createGraph(width, height int, obstacles []Obstacle) {
 			y := v.coor.y + dy
 
 			if x >= 0 && x < width && y >= 0 && y < height && math.Abs(float64(dx)) <= 3 && math.Abs(float64(dy)) <= 3 {
-				edge := NewVertex(v.value+1, Point{x, y}, Velocity{dx, dy})
+				edge := NewVertex(v.value+1, Point{x, y}, Velocity{dx, dy}, v)
 				v.addEdge(edge, obstacles)
 			}
 
@@ -86,7 +88,7 @@ func (v *Vertex) finished(finish Point) bool {
 }
 
 //BFS performs a breadth first search on the graph
-func (v *Vertex) BFS(finish Point, width, height int, obstacles []Obstacle) int {
+func (v *Vertex) BFS(finish Point, width, height int, obstacles []Obstacle) *Vertex {
 	var queue []*Vertex
 	queue = append(queue, v)
 
@@ -94,7 +96,7 @@ func (v *Vertex) BFS(finish Point, width, height int, obstacles []Obstacle) int 
 
 		current := queue[0]
 		if current.finished(finish) {
-			return current.value
+			return current
 		}
 
 		queue = queue[1:]
@@ -102,5 +104,19 @@ func (v *Vertex) BFS(finish Point, width, height int, obstacles []Obstacle) int 
 		queue = append(queue, current.edges...)
 	}
 
-	return 0
+	return nil
+}
+
+// History returns list of vertexes from the initial vertex to this version of vertex
+// This is used for animated representation
+func (v *Vertex) History() []*Vertex {
+	vertexes := make([]*Vertex, v.value+1)
+	i := len(vertexes) - 1
+	current := v
+	for current != nil {
+		vertexes[i] = current
+		current = current.past
+		i--
+	}
+	return vertexes
 }

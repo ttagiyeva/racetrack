@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -90,14 +91,16 @@ func TestBFS(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			vertex := NewVertex(0, tt.args.start, Velocity{DX: 0, DY: 0})
+			vertex := NewVertex(0, tt.args.start, Velocity{DX: 0, DY: 0}, nil)
 			obstacles := CreateObstacles(tt.args.obstacleCount, tt.args.obstacles)
-			hops := vertex.BFS(tt.args.finish, tt.args.width, tt.args.height, obstacles)
+			result := vertex.BFS(tt.args.finish, tt.args.width, tt.args.height, obstacles)
+			fmt.Println(result, result == nil)
 
-			if hops != tt.want {
-				t.Errorf("get %v, want %v", hops, tt.want)
+			if result == nil && tt.want != 0 {
+				t.Errorf("get 0, want %v", tt.want)
+			} else if result != nil && result.value != tt.want {
+				t.Errorf("get %v, want %v", result.value, tt.want)
 			}
-
 		})
 	}
 }
