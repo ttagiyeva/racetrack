@@ -11,7 +11,8 @@ func main() {
 
 		if result != nil {
 			fmt.Printf("Optimal solution takes %d hops.\n", result.value)
-			HopperJourney(result, input.start, input.finish, input.width, input.height, input.obstacles)
+			// In any case commented for the assignment result
+			//HopperJourney(result, input.start, input.finish, input.width, input.height, input.obstacles)
 		} else {
 			fmt.Println("No solution found.")
 		}
