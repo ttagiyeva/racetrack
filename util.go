@@ -46,13 +46,13 @@ func HopperJourney(h *Vertex, start, finish Point, width, height int, obstaclesC
 
 	for i, vertex := range history {
 		fmt.Printf("### STEP %d ####\n", i+1)
-		fmt.Printf("velocity: %v, point: %v\n", vertex.speed, vertex.coor)
+		fmt.Printf("velocity: %v, point: %v\n", vertex.velosity, vertex.point)
 
-		marks[vertex.coor] = "👻" // choose your theme 🐸🐵🦠👀🚖🏂⛄
+		marks[vertex.point] = "👻" // choose your theme 🐸🐵🦠👀🚖🏂⛄
 		PrintGrid(grid, marks)
 
 		if i < len(history)-1 {
-			marks[vertex.coor] = velocityEmoji(history[i+1].speed) // "👣"
+			marks[vertex.point] = velocityEmoji(history[i+1].velosity) // "👣"
 		}
 
 		println()

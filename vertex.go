@@ -19,20 +19,20 @@ type Velocity struct {
 
 // Vertex represents a graph vertex
 type Vertex struct {
-	value int
-	coor  Point
-	speed Velocity
-	edges []*Vertex
-	past  *Vertex //for animated representetion
+	value    int
+	point    Point
+	velosity Velocity
+	edges    []*Vertex
+	past     *Vertex //for animated representetion
 }
 
 //NewVertex creates a new vertex
-func NewVertex(value int, coor Point, speed Velocity, past *Vertex) *Vertex {
+func NewVertex(value int, point Point, velosity Velocity, past *Vertex) *Vertex {
 	return &Vertex{
-		value: value,
-		coor:  coor,
-		speed: speed,
-		past:  past,
+		value:    value,
+		point:    point,
+		velosity: velosity,
+		past:     past,
 	}
 }
 
@@ -44,10 +44,10 @@ func (v *Vertex) createGraph(width, height int, obstacles []Obstacle) {
 	for i := -1; i <= 1; i++ {
 		for j := -1; j <= 1; j++ {
 
-			dx := v.speed.DX + i
-			dy := v.speed.DY + j
-			x := v.coor.x + dx
-			y := v.coor.y + dy
+			dx := v.velosity.DX + i
+			dy := v.velosity.DY + j
+			x := v.point.x + dx
+			y := v.point.y + dy
 
 			if x >= 0 && x < width && y >= 0 && y < height && math.Abs(float64(dx)) <= 3 && math.Abs(float64(dy)) <= 3 {
 				edge := NewVertex(v.value+1, Point{x, y}, Velocity{dx, dy}, v)
@@ -61,7 +61,7 @@ func (v *Vertex) createGraph(width, height int, obstacles []Obstacle) {
 //isObstacle checks if the current vertex is an obstacle
 func (v *Vertex) isObstacle(obstacles []Obstacle) bool {
 	for _, obstacle := range obstacles {
-		if v.coor.x == obstacle.point.x && v.coor.y == obstacle.point.y {
+		if v.point.x == obstacle.point.x && v.point.y == obstacle.point.y {
 			return true
 		}
 	}
@@ -72,7 +72,7 @@ func (v *Vertex) isObstacle(obstacles []Obstacle) bool {
 func (v *Vertex) addEdge(vertex *Vertex, obstacles []Obstacle) {
 	if !vertex.isObstacle(obstacles) {
 
-		visit := Visit{Point: vertex.coor, Velocity: vertex.speed}
+		visit := Visit{Point: vertex.point, Velocity: vertex.velosity}
 		if visitedEdges[visit] {
 			return
 		}
@@ -84,7 +84,7 @@ func (v *Vertex) addEdge(vertex *Vertex, obstacles []Obstacle) {
 
 //finished checks if the current vertex is the finish
 func (v *Vertex) finished(finish Point) bool {
-	return v.coor.x == finish.x && v.coor.y == finish.y
+	return v.point.x == finish.x && v.point.y == finish.y
 }
 
 //BFS performs a breadth first search on the graph
